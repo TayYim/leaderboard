@@ -17,6 +17,8 @@ from srunner.scenariomanager.timer import GameTime
 from leaderboard.utils.route_manipulation import downsample_route
 from leaderboard.envs.sensor_interface import SensorInterface
 
+import csv
+
 
 class Track(Enum):
 
@@ -45,6 +47,11 @@ class AutonomousAgent(object):
         self.setup(path_to_conf_file)
 
         self.wallclock_t0 = None
+
+        # self._time_log = []
+
+        self._time_log_file = open('agent_performance.csv', 'w')
+        self._writer = csv.writer(self._time_log_file)
 
     def setup(self, path_to_conf_file):
         """
@@ -94,7 +101,7 @@ class AutonomousAgent(object):
         Destroy (clean-up) the agent
         :return:
         """
-        pass
+        self._time_log_file.close()
 
     def __call__(self):
         """
@@ -110,7 +117,10 @@ class AutonomousAgent(object):
         wallclock = GameTime.get_wallclocktime()
         wallclock_diff = (wallclock - self.wallclock_t0).total_seconds()
 
-        print('======[Agent] Wallclock_time = {} / {} / Sim_time = {} / {}x'.format(wallclock, wallclock_diff, timestamp, timestamp/(wallclock_diff+0.001)))
+        time_item = [wallclock, wallclock_diff, timestamp, timestamp/(wallclock_diff+0.001)]
+        # self._time_log.append(time_item)
+        self._writer.writerow(time_item)
+        # print('======[Agent] Wallclock_time = {} / {} / Sim_time = {} / {}x'.format(wallclock, wallclock_diff, timestamp, timestamp/(wallclock_diff+0.001)))
 
         control = self.run_step(input_data, timestamp)
         control.manual_gear_shift = False
