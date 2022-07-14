@@ -13,8 +13,6 @@ from __future__ import print_function
 
 from dictor import dictor
 import math
-import sys
-from copy import deepcopy
 
 from srunner.scenariomanager.traffic_events import TrafficEventType
 
@@ -27,14 +25,17 @@ PENALTY_VALUE_DICT = {
     TrafficEventType.COLLISION_STATIC: 0.65,
     TrafficEventType.TRAFFIC_LIGHT_INFRACTION: 0.7,
     TrafficEventType.STOP_INFRACTION: 0.8,
+    TrafficEventType.SCENARIO_TIMEOUT: 0.7,
 }
-
 PENALTY_PERC_DICT = {
     # Traffic events that substract a varying amount of points. This is the per unit value.
-    TrafficEventType.OUTSIDE_ROUTE_LANES_INFRACTION: 1,
-    TrafficEventType.MIN_SPEED_INFRACTION: 0.2,
-    TrafficEventType.YIELD_TO_EMERGENCY_VEHICLE: 0.25
+    # 'increases' means that the higher the value, the higher the penalty.
+    # 'decreases' means that the ideal value is 100 and the lower the value, the higher the penalty.
+    TrafficEventType.OUTSIDE_ROUTE_LANES_INFRACTION: [1, 'increases'],
+    TrafficEventType.MIN_SPEED_INFRACTION: [0.2, 'decreases'],
+    TrafficEventType.YIELD_TO_EMERGENCY_VEHICLE: [0.25, 'decreases']
 }
+
 PENALTY_NAME_DICT = {
     TrafficEventType.COLLISION_STATIC: 'Collisions with layout',
     TrafficEventType.COLLISION_PEDESTRIAN: 'Collisions with pedestrians',
@@ -43,10 +44,11 @@ PENALTY_NAME_DICT = {
     TrafficEventType.STOP_INFRACTION: 'Stop sign infractions',
     TrafficEventType.OUTSIDE_ROUTE_LANES_INFRACTION: 'Off-road infractions',
     TrafficEventType.MIN_SPEED_INFRACTION: 'Min speed infractions',
+    TrafficEventType.YIELD_TO_EMERGENCY_VEHICLE: 'Yield to emergency vehicle infractions',
+    TrafficEventType.SCENARIO_TIMEOUT: 'Scenario timeouts',
     TrafficEventType.ROUTE_DEVIATION: 'Route deviations',
     TrafficEventType.VEHICLE_BLOCKED: 'Agent blocked',
-    TrafficEventType.YIELD_TO_EMERGENCY_VEHICLE: 'Yield to emergency vehicle',
-}  # These should match the RouteRecord.infractions
+}
 
 # Limit the entry status to some values. Eligible should always be gotten from this table
 ENTRY_STATUS_VALUES = ['Started', 'Finished', 'Rejected', 'Crashed', 'Invalid']
@@ -61,18 +63,9 @@ class RouteRecord():
         self.route_id = None
         self.result = 'Started'
         self.num_infractions = 0
-        self.infractions = {
-            'Collisions with pedestrians': [],
-            'Collisions with vehicles': [],
-            'Collisions with layout': [],
-            'Red lights infractions': [],
-            'Stop sign infractions': [],
-            'Off-road infractions': [],
-            'Min speed infractions': [],
-            'Route deviations': [],
-            'Route timeouts': [],
-            'Agent blocked': []
-        }
+        self.infractions = {}
+        for event_name in PENALTY_NAME_DICT.values():
+            self.infractions[event_name] = []
 
         self.scores = {
             'Driving score': 0,
@@ -94,17 +87,9 @@ class RouteRecord():
 class GlobalRecord():
     def __init__(self):
         self.result = 'Perfect'
-        self.infractions_per_km = {
-            'Collisions with pedestrians': 0,
-            'Collisions with vehicles': 0,
-            'Collisions with layout': 0,
-            'Red lights infractions': 0,
-            'Stop sign infractions': 0,
-            'Off-road infractions': 0,
-            'Route deviations': 0,
-            'Route timeouts': 0,
-            'Agent blocked': 0
-        }
+        self.infractions_per_km = {}
+        for event_name in PENALTY_NAME_DICT.values():
+            self.infractions_per_km[event_name] = 0
 
         self.scores_mean = {
             'Driving score': 0,
@@ -189,11 +174,13 @@ class StatisticsManager(object):
     It gathers data at runtime via the scenario evaluation criteria.
     """
 
-    def __init__(self, endpoint):
+    def __init__(self, endpoint, debug_endpoint):
         self._scenario = None
+        self._route_length = 0
         self._total_routes = 0
         self._results = Results()
         self._endpoint = endpoint
+        self._debug_endpoint = debug_endpoint
 
     def add_file_records(self, endpoint):
         """Reads a file and saves its records onto the statistics manager"""
@@ -218,21 +205,69 @@ class StatisticsManager(object):
             int(x.route_id.split('_rep')[-1])
         ))
 
+    def write_live_results(self, index, ego_speed, ego_control):
+        """Writes live results"""
+        route_record = self._results.checkpoint.records[index]
+
+        all_events = []
+        if self._scenario:
+            for node in self._scenario.get_criteria():
+                all_events.extend(node.events)
+
+        all_events.sort(key=lambda e: e.get_frame(), reverse=True)
+
+        with open(self._debug_endpoint, 'w') as f:
+            f.write("""Route id: {}
+
+Scores:
+    Driving score:      {:.3f}
+    Route completion:   {:.3f}
+    Infraction penalty: {:.3f}
+
+    Route length:    {:.3f}
+    Game duration:   {:.3f}
+    System duration: {:.3f}
+
+Ego:
+    Throttle:           {:.3f}
+    Brake:              {:.3f}
+    Steer:              {:.3f}
+
+    Speed:           {:.3f} km/h
+
+Total infractions: {}
+Last infractions:\n""".format(
+                    route_record.route_id,
+                    route_record.scores["Driving score"],
+                    route_record.scores["Route completion"],
+                    route_record.scores["Infraction penalty"],
+                    route_record.meta["Route length"],
+                    route_record.meta["Game duration"],
+                    route_record.meta["System duration"],
+                    ego_control.throttle,
+                    ego_control.brake,
+                    ego_control.steer,
+                    ego_speed * 3.6,
+                    route_record.num_infractions
+                )
+            )
+            for e in all_events[:5]:
+                # Prevent showing the ROUTE_COMPLETION event.
+                if e.get_type() != TrafficEventType.ROUTE_COMPLETION:
+                    f.write("\t" + str(e.get_type()) + "\n")
+
     def save_sensors(self, sensors):
         self._results.sensors = sensors
-        save_dict(self._endpoint, self._results.to_json())
 
     def save_entry_status(self, entry_status):
         if entry_status not in ENTRY_STATUS_VALUES:
             raise ValueError("Found an invalid value for 'entry_status'")
         self._results.entry_status = entry_status
         self._results.eligible = ELIGIBLE_VALUES[entry_status]
-        save_dict(self._endpoint, self._results.to_json())
 
     def save_progress(self, route_index, total_routes):
         self._results.checkpoint.progress = [route_index, total_routes]
         self._total_routes = total_routes
-        save_dict(self._endpoint, self._results.to_json())
 
     def create_route_data(self, route_id, index):
         """
@@ -249,13 +284,15 @@ class StatisticsManager(object):
         else:
             self._results.checkpoint.records.append(route_record)
 
-    def set_scenario(self, scenario):
+    def set_scenario(self, config, scenario):
         """Sets the scenario from which the statistics will be taken"""
         self._scenario = scenario
+        self._route_length = round(compute_route_length(config), ROUND_DIGITS)
 
     def remove_scenario(self):
         """Removes the scenario"""
         self._scenario = None
+        self._route_length = 0
 
     def compute_route_statistics(self, config, duration_time_system=-1, duration_time_game=-1, failure_message=""):
         """
@@ -263,9 +300,20 @@ class StatisticsManager(object):
         Failure message will not be empty if an external source has stopped the simulations (i.e simulation crash).
         For the rest of the cases, it will be filled by this function depending on the criteria.
         """
-        def set_infraction_message(event):
+        def set_infraction_message():
             infraction_name = PENALTY_NAME_DICT[event.get_type()]
             route_record.infractions[infraction_name].append(event.get_message())
+
+        def set_score_penalty(score_penalty):
+            event_value = event.get_dict()['percentage']
+            penalty_value, penalty_type = PENALTY_PERC_DICT[event.get_type()]
+            if penalty_type == "decreases":
+                score_penalty *= penalty_value * (event_value / 100)
+            elif penalty_type == "increases":
+                score_penalty *= penalty_value * (1 - event_value / 100)
+            else:
+                raise ValueError("Found a criteria with an unknown penalty type")
+            return score_penalty
 
         index = config.index
         route_record = self._results.checkpoint.records[index]
@@ -273,9 +321,11 @@ class StatisticsManager(object):
         target_reached = False
         score_penalty = 1.0
         score_route = 0.0
+        for event_name in PENALTY_NAME_DICT.values():
+            route_record.infractions[event_name] = []
 
         # Update the route meta
-        route_record.meta['Route length'] = round(compute_route_length(config), ROUND_DIGITS)
+        route_record.meta['Route length'] = self._route_length
         route_record.meta['Game duration'] = round(duration_time_game, ROUND_DIGITS)
         route_record.meta['System duration'] = round(duration_time_system, ROUND_DIGITS)
 
@@ -286,42 +336,29 @@ class StatisticsManager(object):
                 failure_message = "Agent timed out"
 
             for node in self._scenario.get_criteria():
-                if node.events:
-                    for event in node.events:
+                for event in node.events:
+                    # Traffic events that substract a set amount of points
+                    if event.get_type() in PENALTY_VALUE_DICT:
+                        score_penalty *= PENALTY_VALUE_DICT[event.get_type()]
+                        set_infraction_message()
 
-                        # Traffic events that substract a set amount of points
-                        if event.get_type() in PENALTY_VALUE_DICT:
-                            score_penalty *= PENALTY_VALUE_DICT[event.get_type()]
-                            set_infraction_message(event)
+                    # Traffic events that substract a varying amount of points
+                    elif event.get_type() in PENALTY_PERC_DICT:
+                        score_penalty = set_score_penalty(score_penalty)
+                        set_infraction_message()
 
-                        # Traffic events that substract a varying amount of points
-                        elif event.get_type() == TrafficEventType.OUTSIDE_ROUTE_LANES_INFRACTION:
-                            score_value = event.get_dict()['percentage']
-                            score_penalty *= PENALTY_PERC_DICT[event.get_type()] * (1 - score_value / 100)
-                            set_infraction_message(event)
+                    # Traffic events that stop the simulation
+                    elif event.get_type() == TrafficEventType.ROUTE_DEVIATION:
+                        failure_message = "Agent deviated from the route"
+                        set_infraction_message()
 
-                        elif event.get_type() == TrafficEventType.MIN_SPEED_INFRACTION:
-                            score_value = event.get_dict()['percentage']
-                            score_penalty *= PENALTY_PERC_DICT[event.get_type()] * (score_value / 100)
-                            set_infraction_message(event)
+                    elif event.get_type() == TrafficEventType.VEHICLE_BLOCKED:
+                        failure_message = "Agent got blocked"
+                        set_infraction_message()
 
-                        elif event.get_type() == TrafficEventType.YIELD_TO_EMERGENCY_VEHICLE:
-                            score_value = event.get_dict()['percentage']
-                            score_penalty *= PENALTY_PERC_DICT[event.get_type()] * (score_value / 100)
-                            set_infraction_message(event)
-
-                        # Traffic events that stop the simulation
-                        elif event.get_type() == TrafficEventType.ROUTE_DEVIATION:
-                            failure_message = "Agent deviated from the route"
-                            set_infraction_message(event)
-
-                        elif event.get_type() == TrafficEventType.VEHICLE_BLOCKED:
-                            failure_message = "Agent got blocked"
-                            set_infraction_message(event)
-
-                        elif event.get_type() == TrafficEventType.ROUTE_COMPLETION:
-                            score_route = event.get_dict()['route_completed']
-                            target_reached = score_route >= 100
+                    elif event.get_type() == TrafficEventType.ROUTE_COMPLETION:
+                        score_route = event.get_dict()['route_completed']
+                        target_reached = score_route >= 100
 
         # Update route scores
         route_record.scores['Route completion'] = round(score_route, ROUND_DIGITS_SCORE)
@@ -346,8 +383,6 @@ class StatisticsManager(object):
             self._results.checkpoint.records[index] = route_record
         else:
             raise ValueError("Not enough entries in the route record")
-
-        save_dict(self._endpoint, self._results.to_json())
 
     def compute_global_statistics(self):
         """Computes and saves the global statistics of the routes"""
@@ -413,9 +448,7 @@ class StatisticsManager(object):
         self._results.entry_status = entry_status
         self._results.eligible = ELIGIBLE_VALUES[entry_status]
 
-        save_dict(self._endpoint, self._results.to_json())
-
-    def validate_statistics(self):
+    def validate_and_write_statistics(self):
         """
         Makes sure that all the relevant data is there.
         Changes the 'entry status' to 'Invalid' if this isn't the case"""
@@ -460,6 +493,4 @@ class StatisticsManager(object):
             self._results.entry_status = entry_status
             self._results.eligible = ELIGIBLE_VALUES[entry_status]
 
-            save_dict(self._endpoint, self._results.to_json())
-
-
+        save_dict(self._endpoint, self._results.to_json())
