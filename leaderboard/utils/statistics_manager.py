@@ -205,7 +205,7 @@ class StatisticsManager(object):
             int(x.route_id.split('_rep')[-1])
         ))
 
-    def write_live_results(self, index, ego_speed, ego_control):
+    def write_live_results(self, index, ego_speed, ego_location, ego_control):
         """Writes live results"""
         route_record = self._results.checkpoint.records[index]
 
@@ -230,6 +230,7 @@ class StatisticsManager(object):
                     "    Brake:              {:.3f}\n"
                     "    Steer:              {:.3f}\n\n"
                     "    Speed:           {:.3f} km/h\n\n"
+                    "    Location:       ({:.2f}, {:.2f}, {:.2f})\n\n"
                     "Total infractions: {}\n"
                     "Last 5 infractions:\n".format(
                         route_record.route_id,
@@ -243,6 +244,7 @@ class StatisticsManager(object):
                         ego_control.brake,
                         ego_control.steer,
                         ego_speed * 3.6,
+                        ego_location.x, ego_location.y, ego_location.z,
                         route_record.num_infractions
                     )
                 )

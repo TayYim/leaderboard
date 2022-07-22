@@ -194,6 +194,7 @@ class ScenarioManager(object):
                 self._statistics_manager.write_live_results(
                     self.config.index,
                     self.ego_vehicles[0].get_velocity().length(),
+                    self.ego_vehicles[0].get_location(),
                     ego_action
                 )
 
