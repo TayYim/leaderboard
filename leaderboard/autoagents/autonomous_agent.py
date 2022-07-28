@@ -28,13 +28,14 @@ class Track(Enum):
     SENSORS = 'SENSORS'
     MAP = 'MAP'
 
+
 class AutonomousAgent(object):
 
     """
     Autonomous agent base class. All user agents have to be derived from this class
     """
 
-    def __init__(self, path_to_conf_file):
+    def __init__(self, carla_host, carla_port, debug=False):
         self.track = Track.SENSORS
         #  current global plans to reach a destination
         self._global_plan = None
@@ -42,9 +43,6 @@ class AutonomousAgent(object):
 
         # this data structure will contain all sensor data
         self.sensor_interface = SensorInterface()
-
-        # agent's initialization
-        self.setup(path_to_conf_file)
 
         self.wallclock_t0 = None
 
@@ -108,7 +106,7 @@ class AutonomousAgent(object):
         Execute the agent call, e.g. agent()
         Returns the next vehicle controls
         """
-        input_data = self.sensor_interface.get_data()
+        input_data = self.sensor_interface.get_data(GameTime.get_frame())
 
         timestamp = GameTime.get_time()
 
@@ -126,6 +124,10 @@ class AutonomousAgent(object):
         control.manual_gear_shift = False
 
         return control
+
+    @staticmethod
+    def get_ros_version():
+        return -1
 
     def set_global_plan(self, global_plan_gps, global_plan_world_coord):
         """
