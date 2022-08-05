@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 dt = []
 ratio = []
-with open('../agent_performance.csv', newline='') as csvfile:
+with open('../agent_performance_r7_sc_nc.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',')
     for row in spamreader:
         dt.append(float(row[2]))
@@ -14,7 +14,7 @@ with open('../agent_performance.csv', newline='') as csvfile:
 # count result
 mean_ratio = sum(ratio)/len(ratio)
 mean_fps = 20*mean_ratio
-print("mean_ratio:{}, mean_fps:{}".format(mean_ratio, mean_fps))
+print("mean_ratio:{:.2f}, mean_fps:{:.2f}".format(mean_ratio, mean_fps))
         
 dt=dt[20:]
 ratio=ratio[20:]
