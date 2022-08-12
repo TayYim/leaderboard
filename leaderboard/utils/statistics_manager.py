@@ -26,6 +26,7 @@ PENALTY_VALUE_DICT = {
     TrafficEventType.TRAFFIC_LIGHT_INFRACTION: 0.7,
     TrafficEventType.STOP_INFRACTION: 0.8,
     TrafficEventType.SCENARIO_TIMEOUT: 0.7,
+    TrafficEventType.YIELD_TO_EMERGENCY_VEHICLE: 0.7
 }
 PENALTY_PERC_DICT = {
     # Traffic events that substract a varying amount of points. This is the per unit value.
@@ -33,7 +34,6 @@ PENALTY_PERC_DICT = {
     # 'decreases' means that the ideal value is 100 and the lower the value, the higher the penalty.
     TrafficEventType.OUTSIDE_ROUTE_LANES_INFRACTION: [1, 'increases'],
     TrafficEventType.MIN_SPEED_INFRACTION: [0.2, 'decreases'],
-    TrafficEventType.YIELD_TO_EMERGENCY_VEHICLE: [0.25, 'decreases']
 }
 
 PENALTY_NAME_DICT = {
@@ -205,7 +205,7 @@ class StatisticsManager(object):
             int(x.route_id.split('_rep')[-1])
         ))
 
-    def write_live_results(self, index, ego_speed, ego_location, ego_control):
+    def write_live_results(self, index, ego_speed, ego_control, ego_location):
         """Writes live results"""
         route_record = self._results.checkpoint.records[index]
 
@@ -230,7 +230,7 @@ class StatisticsManager(object):
                     "    Brake:              {:.3f}\n"
                     "    Steer:              {:.3f}\n\n"
                     "    Speed:           {:.3f} km/h\n\n"
-                    "    Location:       ({:.2f}, {:.2f}, {:.2f})\n\n"
+                    "    Location:           ({:.3f} {:.3f} {:.3f})\n\n"
                     "Total infractions: {}\n"
                     "Last 5 infractions:\n".format(
                         route_record.route_id,
@@ -244,7 +244,9 @@ class StatisticsManager(object):
                         ego_control.brake,
                         ego_control.steer,
                         ego_speed * 3.6,
-                        ego_location.x, ego_location.y, ego_location.z,
+                        ego_location.x,
+                        ego_location.y,
+                        ego_location.z,
                         route_record.num_infractions
                     )
                 )
@@ -391,6 +393,13 @@ class StatisticsManager(object):
 
     def compute_global_statistics(self):
         """Computes and saves the global statistics of the routes"""
+        def get_infractions_value(route_record, key):
+            # Special case for the % based criteria. Extract the meters from the message. Very ugly, but it works
+            if key != PENALTY_NAME_DICT[TrafficEventType.OUTSIDE_ROUTE_LANES_INFRACTION]:
+                return float(route_record.infractions[key][0].split(" ")[8])/1000
+
+            return len(route_record.infractions[key])
+
         global_record = GlobalRecord()
         global_result = global_record.result
 
@@ -403,12 +412,6 @@ class StatisticsManager(object):
             global_record.scores_mean['Infraction penalty'] += route_record.scores['Infraction penalty'] / self._total_routes
             global_record.scores_mean['Driving score'] += route_record.scores['Driving score'] / self._total_routes
 
-            # Infractions
-            for key in global_record.infractions_per_km:
-                route_length = route_record.meta['Route length'] / 1000
-                route_completed = route_record.scores['Route completion'] / 100 * route_length
-                global_record.infractions_per_km[key] += len(route_record.infractions[key]) / max(route_completed, 0.001)
-
             # Downgrade the global result if need be ('Perfect' -> 'Completed' -> 'Failed'), and record the failed routes
             route_result = 'Failed' if 'Failed' in route_record.result else route_record.result 
             if route_result == 'Failed':
@@ -420,8 +423,18 @@ class StatisticsManager(object):
         # Save the global result
         global_record.result = global_result
 
-        # Round the infractions number
+        # Calculate the number of infractions per km, and round the infractions number
+        km_driven = 0
+        for route_record in route_records:
+            km_driven += route_record.meta['Route length'] / 1000 * route_record.scores['Route completion'] / 100
+            for key in global_record.infractions_per_km:
+                global_record.infractions_per_km[key] += get_infractions_value(route_record, key)
+        km_driven = max(km_driven, 0.001)
+
         for key in global_record.infractions_per_km:
+            # Special case for the % based criteria.
+            if key != PENALTY_NAME_DICT[TrafficEventType.OUTSIDE_ROUTE_LANES_INFRACTION]:
+                global_record.infractions_per_km[key] /= km_driven
             global_record.infractions_per_km[key] = round(global_record.infractions_per_km[key], ROUND_DIGITS)
 
         # Scores standard deviation (Need the score mean to be calculated)
