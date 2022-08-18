@@ -40,8 +40,8 @@ class HumanInterface(object):
     """
 
     def __init__(self, width, height, side_scale, left_mirror=False, right_mirror=False):
-        self._width = 896/2
-        self._height = 504/2
+        self._width = int(896/2)
+        self._height = int(504/2)
         self._scale = side_scale
         self._surface = None
 
@@ -108,8 +108,8 @@ class HumanAgent(AutonomousAgent):
         self.track = Track.SENSORS
 
         self.agent_engaged = False
-        self.camera_width = 896/2
-        self.camera_height = 504/2
+        self.camera_width = int(896/2)
+        self.camera_height = int(504/2)
         self._side_scale = 0.3
         self._left_mirror = False
         self._right_mirror = False
