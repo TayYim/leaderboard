@@ -34,7 +34,7 @@ from srunner.scenariomanager.scenarioatomics.atomic_criteria import (CollisionTe
                                                                      RunningRedLightTest,
                                                                      RunningStopTest,
                                                                      ActorBlockedTest,
-                                                                     MinSpeedRouteTest)
+                                                                     MinimumSpeedRouteTest)
 
 from srunner.scenarios.basic_scenario import BasicScenario
 from srunner.scenarios.background_activity import BackgroundBehavior
@@ -256,12 +256,10 @@ class RouteScenario(BasicScenario):
                     world.tick()
 
             except Exception as e:
-                if not debug:
-                    print(f"Skipping scenario '{scenario_config.name}' due to setup error: {e}")
-                else:
-                    print(f"\033[93mFailed to initialize scenario {scenario_config.name}:")
-                    traceback.print_exc()
-                    print("\033[0m")
+                print(f"\033[93mSkipping scenario '{scenario_config.name}' due to setup error: {e}")
+                if debug:
+                    print(f"\n{traceback.format_exc()}")
+                print("\033[0m", end="")
                 continue
 
             self.list_scenarios.append(scenario_instance)
@@ -325,7 +323,7 @@ class RouteScenario(BasicScenario):
         criteria.add_child(CollisionTest(self.ego_vehicles[0], name="CollisionTest"))
         criteria.add_child(RunningRedLightTest(self.ego_vehicles[0]))
         criteria.add_child(RunningStopTest(self.ego_vehicles[0]))
-        criteria.add_child(MinSpeedRouteTest(self.ego_vehicles[0], name="MinSpeedTest"))
+        criteria.add_child(MinimumSpeedRouteTest(self.ego_vehicles[0], self.route, checkpoints=4, name="MinSpeedTest"))
 
         # These stop the route early to save computational time
         criteria.add_child(InRouteTest(

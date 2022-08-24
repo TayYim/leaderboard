@@ -9,7 +9,6 @@
 import argparse
 from lxml import etree
 import sys
-import math
 
 import carla
 
@@ -18,19 +17,8 @@ from agents.navigation.global_route_planner import GlobalRoutePlanner
 LIFE_TIME = 10000
 
 SCENARIO_TYPES ={
-    # Old scenarios
-    "ControlLoss": [
-    ],
-    "HardBreakRoute": [
-    ],
-    "DynamicObjectCrossing": [
-        ["distance", "value"],
-        ["direction", "value"],
-        ["blocker_model", "value"],
-        ["crossing_angle", "value"]
-    ],
-    "VehicleTurningRoute": [
-    ],
+
+    # Junction scenarios
     "SignalizedJunctionLeftTurn": [
         ["flow_speed", "value"],
         ["source_dist_interval", "interval"],
@@ -42,7 +30,6 @@ SCENARIO_TYPES ={
     "OppositeVehicleRunningRedLight": [
         ["direction", "choice"],
     ],
-    # Old junction scenarios, non signalized version
     "NonSignalizedJunctionLeftTurn": [
         ["flow_speed", "value"],
         ["source_dist_interval", "interval"],
@@ -54,18 +41,28 @@ SCENARIO_TYPES ={
     "OppositeVehicleTakingPriority": [
         ["direction", "choice"],
     ],
+
     # Crossing actors
+    "DynamicObjectCrossing": [
+        ["distance", "value"],
+        ["direction", "value"],
+        ["blocker_model", "value"],
+        ["crossing_angle", "value"]
+    ],
     "ParkingCrossingPedestrian": [
         ["distance", "value"],
         ["direction", "choice"],
         ["crossing_angle", "value"],
     ],
     "PedestrianCrossing": [
-        # ["start_walker_flow", "location sidewalk"],
-        # ["end_walker_flow_1", "location sidewalk probability"],
-        # ["end_walker_flow_2", "location sidewalk probability"],
-        # ["source_dist_interval", "interval"],
     ],
+    "VehicleTurningRoute": [
+    ],
+    "VehicleTurningRoutePedestrian": [
+    ],
+    "BlockedIntersection": [
+    ],
+
     # Actor flows
     "EnterActorFlow": [
         ["start_actor_flow", "location driving"],
@@ -114,6 +111,7 @@ SCENARIO_TYPES ={
         ["flow_speed", "value"],
         ["source_dist_interval", "interval"],
     ],
+
     # Route obstacles
     "ConstructionObstacle": [
         ["distance", "value"],
@@ -142,10 +140,6 @@ SCENARIO_TYPES ={
         ["distance", "value"],
         ["frequency", "interval"],
     ],
-    "VehicleOpensDoor": [
-        ["distance", "value"],
-        ["speed", "value"],
-    ],
     "VehicleOpensDoorTwoWays": [
         ["distance", "value"],
         ["frequency", "interval"],
@@ -162,6 +156,10 @@ SCENARIO_TYPES ={
         ["bicycle_drive_distance", "value"],
         ["bicycle_speed", "value"],
     ],
+    "InvadingTurn": [
+        ["distance", "value"],
+        ["offset", "value"],
+    ],
 
     # Cut ins
     "HighwayCutIn": [
@@ -172,30 +170,24 @@ SCENARIO_TYPES ={
     ],
     "StaticCutIn": [
         ["distance", "value"],
-        ["speed", "value"],
         ["direction", "choice"],
     ],
 
-    # Highway
+    # Others
+    "ControlLoss": [
+    ],
+    "HardBreakRoute": [
+    ],
+    "ParkingExit": [
+        ["direction", "choice"],
+        ["front_vehicle_distance", "value"],
+        ["behind_vehicle_distance", "value"],
+    ],
     "YieldToEmergencyVehicle": [
         ["distance", "value"],
     ],
 
-    # Others
-    "BlockedIntersection": [
-    ],
-    "InvadingTurn": [
-        ["distance", "value"],
-        ["offset", "value"],
-    ],
-
     # Special ones
-    "ParkingExit": [
-        ["direction", "choice"],
-        ["flow_distance", "value"],
-        ["front_vehicle_distance", "value"],
-        ["behind_vehicle_distance", "value"],
-    ],
     "BackgroundActivityParametrizer": [
         ["num_front_vehicles", "value"],
         ["num_back_vehicles", "value"],
