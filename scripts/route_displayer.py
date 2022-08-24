@@ -161,7 +161,10 @@ def show_saved_scenarios(route, world):
         name = scenario.attrib.get('name')
         trigger_location = convert_elem_to_location(scenario.find('trigger_point'))
         world.debug.draw_point(trigger_location + carla.Location(z=0.2), size=0.1, color=carla.Color(125, 0, 0))
-        world.debug.draw_string(trigger_location + carla.Location(z=0.5), name, True, color=carla.Color(0, 0 , 125), life_time=LIFE_TIME)
+        if "VehicleTurning" in name:
+            world.debug.draw_string(trigger_location + carla.Location(z=0.5), name, True, color=carla.Color(0, 125 , 125), life_time=LIFE_TIME)
+        else:
+            world.debug.draw_string(trigger_location + carla.Location(z=0.5), name, True, color=carla.Color(0, 0 , 125), life_time=LIFE_TIME)
 
 
 def main():
