@@ -3,9 +3,9 @@ import random
 
 town = "Town12"
 
-x="2096.0" 
-y="-83.4" 
-z="343.4"
+x="3734.1" 
+y="-61.9" 
+z="328.1"
 
 x=float(x)
 y=float(y)

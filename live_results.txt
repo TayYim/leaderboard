@@ -1,0 +1,27 @@
+Route id: RouteScenario_25_rep0
+
+Scores:
+    Driving score:      0.000
+    Route completion:   100.000
+    Infraction penalty: 0.000
+
+    Route length:    7577.078
+    Game duration:   1784.300
+    System duration: 936.998
+
+Ego:
+    Throttle:           0.800
+    Brake:              0.000
+    Steer:              0.000
+
+    Speed:           36.162 km/h
+
+    Location:           (2596.932 -652.179 339.981)
+
+Total infractions: 36
+Last 5 infractions:
+    OUTSIDE_ROUTE_LANES_INFRACTION (value: 0.201%)
+    COLLISION_STATIC (penalty: 0.65)
+    COLLISION_STATIC (penalty: 0.65)
+    COLLISION_STATIC (penalty: 0.65)
+    COLLISION_VEHICLE (penalty: 0.6)
