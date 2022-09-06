@@ -3,9 +3,9 @@ import random
 
 town = "Town12"
 
-x="-1251.0" 
-y="1609.8" 
-z="328.9"
+x="17" 
+y="-9.5" 
+z="3"
 
 x=float(x)
 y=float(y)
@@ -13,7 +13,8 @@ z=float(z)
 
 client = carla.Client('localhost', 2000)
 client.set_timeout(9999)
-world = client.load_world(town)
+# world = client.load_world(town)
+world = client.get_world()
 
 blueprint_library = world.get_blueprint_library()
 vehicle_bp = random.choice(blueprint_library.filter('vehicle.*.*'))
