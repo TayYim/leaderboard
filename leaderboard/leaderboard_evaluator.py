@@ -172,8 +172,8 @@ class LeaderboardEvaluator(object):
         settings = self.world.get_settings()
         settings.fixed_delta_seconds = 1.0 / self.frame_rate
         settings.synchronous_mode = True
-        settings.tile_stream_distance = 1000
-        settings.actor_active_distance = 1000
+        settings.tile_stream_distance = 650
+        settings.actor_active_distance = 650
         self.world.apply_settings(settings)
 
         self.world.reset_all_traffic_lights()
@@ -187,10 +187,7 @@ class LeaderboardEvaluator(object):
         self.traffic_manager.set_random_device_seed(args.traffic_manager_seed)
 
         # Wait for the world to be ready
-        if CarlaDataProvider.is_sync_mode():
-            self.world.tick()
-        else:
-            self.world.wait_for_tick()
+        self.world.tick()
 
         map_name = CarlaDataProvider.get_map().name.split("/")[-1]
         if map_name != town:
@@ -402,7 +399,7 @@ def main():
                         help='Run with debug output', default=0)
     parser.add_argument('--record', type=str, default='',
                         help='Use CARLA recording feature to create a recording of the scenario')
-    parser.add_argument('--timeout', default=60.0, type=float,
+    parser.add_argument('--timeout', default=300.0, type=float,
                         help='Set the CARLA client timeout value in seconds')
 
     # simulation setup
