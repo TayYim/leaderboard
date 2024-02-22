@@ -235,6 +235,7 @@ class AgentWrapper(object):
                 bp = bp_library.find(type_)
                 for key, value in attributes.items():
                     bp.set_attribute(str(key), str(value))
+                bp.set_attribute('role_name', str(id_))
                 sensor = CarlaDataProvider.get_world().spawn_actor(bp, sensor_transform, vehicle)
 
             # setup callback
