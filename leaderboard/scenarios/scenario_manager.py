@@ -164,6 +164,7 @@ class ScenarioManager(object):
         """
         if self._running and self.get_running_status():
             CarlaDataProvider.get_world().tick(self._timeout)
+            # CarlaDataProvider.get_world().wait_for_tick()
 
         timestamp = CarlaDataProvider.get_world().get_snapshot().timestamp
 
@@ -190,7 +191,13 @@ class ScenarioManager(object):
                 raise AgentError(e)
 
             self._watchdog.resume()
-            self.ego_vehicles[0].apply_control(ego_action)
+
+            # Process situation like apollo_agent
+            if ego_action == -1:
+                ego_action = self.ego_vehicles[0].get_control()
+                # print(ego_action.throttle, ego_action.brake)
+            else:
+                self.ego_vehicles[0].apply_control(ego_action)
 
             # Tick scenario. Add the ego control to the blackboard in case some behaviors want to change it
             py_trees.blackboard.Blackboard().set("AV_control", ego_action, overwrite=True)
