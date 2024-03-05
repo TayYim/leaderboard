@@ -183,9 +183,9 @@ class AgentWrapper(object):
                                              yaw=sensor_spec['yaw'])
 
         elif type_ == 'sensor.other.gnss':
-            attributes['noise_alt_stddev'] = str(0.000005)
-            attributes['noise_lat_stddev'] = str(0.000005)
-            attributes['noise_lon_stddev'] = str(0.000005)
+            # attributes['noise_alt_stddev'] = str(0.000005)
+            # attributes['noise_lat_stddev'] = str(0.000005)
+            # attributes['noise_lon_stddev'] = str(0.000005)
             attributes['noise_alt_bias'] = str(0.0)
             attributes['noise_lat_bias'] = str(0.0)
             attributes['noise_lon_bias'] = str(0.0)
@@ -196,12 +196,12 @@ class AgentWrapper(object):
             sensor_rotation = carla.Rotation()
 
         elif type_ == 'sensor.other.imu':
-            attributes['noise_accel_stddev_x'] = str(0.001)
-            attributes['noise_accel_stddev_y'] = str(0.001)
-            attributes['noise_accel_stddev_z'] = str(0.015)
-            attributes['noise_gyro_stddev_x'] = str(0.001)
-            attributes['noise_gyro_stddev_y'] = str(0.001)
-            attributes['noise_gyro_stddev_z'] = str(0.001)
+            # attributes['noise_accel_stddev_x'] = str(0.001)
+            # attributes['noise_accel_stddev_y'] = str(0.001)
+            # attributes['noise_accel_stddev_z'] = str(0.015)
+            # attributes['noise_gyro_stddev_x'] = str(0.001)
+            # attributes['noise_gyro_stddev_y'] = str(0.001)
+            # attributes['noise_gyro_stddev_z'] = str(0.001)
 
             sensor_location = carla.Location(x=sensor_spec['x'],
                                              y=sensor_spec['y'],
