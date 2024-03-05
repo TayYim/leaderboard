@@ -18,7 +18,7 @@ from argparse import RawTextHelpFormatter
 from distutils.version import LooseVersion
 import importlib
 import os
-import pkg_resources
+# import pkg_resources
 import sys
 import carla
 import signal
@@ -78,10 +78,10 @@ class LeaderboardEvaluator(object):
         # Setup the simulation
         self.client, self.client_timeout, self.traffic_manager = self._setup_simulation(args)
 
-        dist = pkg_resources.get_distribution("carla")
-        if dist.version != 'leaderboard':
-            if LooseVersion(dist.version) < LooseVersion('0.9.10'):
-                raise ImportError("CARLA version 0.9.10.1 or newer required. CARLA version found: {}".format(dist))
+        # dist = pkg_resources.get_distribution("carla")
+        # if dist.version != 'leaderboard':
+        #     if LooseVersion(dist.version) < LooseVersion('0.9.10'):
+        #         raise ImportError("CARLA version 0.9.10.1 or newer required. CARLA version found: {}".format(dist))
 
         # Load agent
         module_name = os.path.basename(args.agent).split('.')[0]
@@ -208,7 +208,12 @@ class LeaderboardEvaluator(object):
         """
         Load a new CARLA world without changing the settings and provide data to CarlaDataProvider
         """
-        self.world = self.client.load_world(town, reset_settings=False)
+
+        # If the map is the same, do not reload it
+        self.world = self.client.get_world()
+        current_map = self.world.get_map()
+        if current_map.name.split("/")[-1] != town:
+            self.world = self.client.load_world(town, reset_settings=False)
 
         # Large Map settings are always reset, for some reason
         settings = self.world.get_settings()
