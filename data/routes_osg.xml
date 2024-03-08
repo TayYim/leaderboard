@@ -7,14 +7,13 @@
       <waypoints>
          <position x="396.35" y="310" z="0.00" />
          <position x="396.30" y="100" z="0.00" />
-         
       </waypoints>
       <scenarios>
          <scenario name="HardBreakRoute_1" type="OSG_FrontBrake">
             <trigger_point x="396.35" y="300" z="0.00" yaw="-90" />
-            <absolute_v value="15" />
-            <relative_p value="55.63954009440188" />
-            <relative_v value="5.73575637776568" />
+            <absolute_v value="11.145497053586338" />
+            <relative_p value="39.14928753446652" />
+            <relative_v value="2.7336181381760305" />
          </scenario>
       </scenarios>
    </route>
@@ -30,9 +29,29 @@
       <scenarios>
          <scenario name="CutIn_One_1" type="OSG_CutIn_One">
             <trigger_point x="-9.90" y="-204.31" z="0.00" yaw="90" />
-            <absolute_v value="17.913565158252368" />
-            <relative_p value="62.6293586860043" />
+            <absolute_v value="10.913565158252368" />
+            <relative_p value="20.6293586860043" />
             <relative_v value="-1.3099110654276291" />
+         </scenario>
+      </scenarios>
+   </route>
+   <route id="2" town="Town04">
+      <weathers>
+         <weather route_percentage="0" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="90.0" fog_density="2.0" />
+         <weather route_percentage="100" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="15.0" fog_density="2.0" />
+      </weathers>
+      <waypoints>
+         <position x="-9.90" y="-139.31" z="0.00" />
+         <position x="-9.15" y="70.3" z="0.00" />
+      </waypoints>
+      <scenarios>
+         <scenario name="CutIn_Tow_1" type="OSG_CutIn_Two">
+            <trigger_point x="-9.90" y="-119.31" z="0.00" yaw="90" />
+            <absolute_v value="17.91" />
+            <relative_p_1 value="52.577025386236706" />
+            <relative_v_1 value="-0.7878567585503014" />
+            <relative_p_2 value="-66.48239074847031" />
+            <relative_v_2 value="2.05" />
          </scenario>
       </scenarios>
    </route>
