@@ -89,7 +89,7 @@ class LeaderboardEvaluator(object):
         self.module_agent = importlib.import_module(module_name)
 
         # Create the ScenarioManager
-        self.manager = ScenarioManager(args.timeout, self.statistics_manager, args.debug)
+        self.manager = ScenarioManager(args.timeout, self.statistics_manager, args.debug, args.passive)
 
         # Time control for summary purposes
         self._start_time = GameTime.get_time()
@@ -465,6 +465,8 @@ def main():
                         help="Path to checkpoint used for saving statistics and resuming")
     parser.add_argument("--debug-checkpoint", type=str, default='./live_results.txt',
                         help="Path to checkpoint used for saving live results")
+    parser.add_argument('--passive', type=bool, default=False,
+                        help='Enable passive mode?')
 
     arguments = parser.parse_args()
 

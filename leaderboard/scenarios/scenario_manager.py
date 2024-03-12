@@ -45,7 +45,7 @@ class ScenarioManager(object):
     4. If needed, cleanup with manager.stop_scenario()
     """
 
-    def __init__(self, timeout, statistics_manager, debug_mode=0):
+    def __init__(self, timeout, statistics_manager, debug_mode=0, passive=False):
         """
         Setups up the parameters, which will be filled at load_scenario()
         """
@@ -73,6 +73,8 @@ class ScenarioManager(object):
         self._scenario_thread = None
 
         self._statistics_manager = statistics_manager
+
+        self.passive = passive
 
         # Use the callback_id inside the signal handler to allow external interrupts
         signal.signal(signal.SIGINT, self.signal_handler)
@@ -163,8 +165,10 @@ class ScenarioManager(object):
         Run next tick of scenario and the agent and tick the world.
         """
         if self._running and self.get_running_status():
-            CarlaDataProvider.get_world().tick(self._timeout)
-            # CarlaDataProvider.get_world().wait_for_tick()
+            if self.passive:
+                CarlaDataProvider.get_world().wait_for_tick()
+            else:
+                CarlaDataProvider.get_world().tick(self._timeout)
 
         timestamp = CarlaDataProvider.get_world().get_snapshot().timestamp
 
@@ -195,7 +199,6 @@ class ScenarioManager(object):
             # Process situation like apollo_agent
             if ego_action == -1:
                 ego_action = self.ego_vehicles[0].get_control()
-                # print(ego_action.throttle, ego_action.brake)
             else:
                 self.ego_vehicles[0].apply_control(ego_action)
 
@@ -229,7 +232,7 @@ class ScenarioManager(object):
                 self._running = False
 
             ego_trans = self.ego_vehicles[0].get_transform()
-            self._spectator.set_transform(carla.Transform(ego_trans.location + carla.Location(z=70),
+            self._spectator.set_transform(carla.Transform(ego_trans.location + carla.Location(z=100),
                                                           carla.Rotation(pitch=-90)))
 
     def get_running_status(self):
