@@ -10,10 +10,12 @@ This module provides an NPC agent to control the ego vehicle
 from __future__ import print_function
 
 import carla
-from agents.navigation.basic_agent import BasicAgent
 from srunner.scenariomanager.carla_data_provider import CarlaDataProvider
 
 from leaderboard.autoagents.autonomous_agent import AutonomousAgent, Track
+import subprocess
+import threading
+import time
 
 
 def get_entry_point():
@@ -27,6 +29,12 @@ class ApolloAgent(AutonomousAgent):
 
     _agent = None
     _route_assigned = False
+    _container_name = "apollo_dev_tay"
+    x = 0
+    y = 0
+    z = 0
+    yaw = 0
+    m = "Town04"
 
     def setup(self, path_to_conf_file):
         """
@@ -36,7 +44,18 @@ class ApolloAgent(AutonomousAgent):
 
         self._agent = None
 
-        self._ego_vehicle = None
+        # Find destination
+
+        # Execute the Apollo
+        command = f"/bin/bash start.sh -x {self.x} -y {self.y} -z {self.z} -yaw {self.yaw} -m {self.m}"
+        docker_exec_command = f"docker exec --user tay -w /apollo/modules/apollo-bridge  {self._container_name} {command}"
+        print(command)
+        process = subprocess.Popen(
+            docker_exec_command,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
 
     def sensors(self):
         """
@@ -132,28 +151,9 @@ class ApolloAgent(AutonomousAgent):
         """
         Execute one step of navigation.
         """
-        # if not self._ego_vehicle:
 
-        #     # Search for the ego actor
-        #     hero_actor = None
-        #     for actor in CarlaDataProvider.get_world().get_actors():
-        #         if (
-        #             "role_name" in actor.attributes
-        #             and actor.attributes["role_name"] == "hero"
-        #         ):
-        #             hero_actor = actor
-        #             self._ego_vehicle = hero_actor
-        #             break
-
-        #     if not hero_actor:
-        #         return carla.VehicleControl()
-
-        #     return carla.VehicleControl()
-
-        # else:
-        #     return -1
         return -1
-    
+
     def __call__(self):
         """
         Execute the agent call, e.g. agent()
@@ -164,3 +164,36 @@ class ApolloAgent(AutonomousAgent):
 
     def get_control(self):
         return self._agent.get_control()
+
+    def destroy(self):
+        """
+        Destroy (clean-up) the agent
+        :return:
+        """
+        print("Run destroy")
+        command = "/bin/bash kill.sh"
+        docker_exec_command = f"docker exec --user tay -w /apollo/modules/apollo-bridge  {self._container_name} {command}"
+        process = subprocess.Popen(
+            docker_exec_command,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        time.sleep(3)
+
+    def set_global_plan(self, global_plan_gps, global_plan_world_coord):
+        """
+        Set the plan (route) for the agent
+        """
+        # Set the destination and map name
+        dest_tf = global_plan_world_coord[-1][0]
+        carla_map = CarlaDataProvider.get_map()
+        wp = carla_map.get_waypoint(dest_tf.location)
+        wp = wp.next(10)[0]
+        dest_lc = wp.transform.location
+        dest_yaw = wp.transform.rotation.yaw
+        self.x = dest_lc.x
+        self.y = dest_lc.y
+        self.z = dest_lc.z
+        self.yaw = dest_yaw
+        self.m = carla_map.name.split("/")[-1]
