@@ -9,6 +9,9 @@
          <position x="396.30" y="100" z="0.00" />
       </waypoints>
       <scenarios>
+         <scenario name="OSG_Data_Collect_1" type="OSG_Data_Collect">
+            <trigger_point x="396.35" y="300" z="0.00" yaw="-90" />
+         </scenario>
          <scenario name="HardBreakRoute_1" type="OSG_FrontBrake">
             <trigger_point x="396.35" y="300" z="0.00" yaw="-90" />
             <absolute_v value="11.145497053586338" />
@@ -17,7 +20,8 @@
          </scenario>
       </scenarios>
    </route>
-   <route id="1" town="Town04">
+   
+   <route id="100" town="Town04">
       <weathers>
          <weather route_percentage="0" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="90.0" fog_density="2.0" />
          <weather route_percentage="100" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="15.0" fog_density="2.0" />
@@ -27,15 +31,19 @@
          <position x="-9.15" y="-14.70" z="0.00" />
       </waypoints>
       <scenarios>
+         <scenario name="OSG_Data_Collect_1" type="OSG_Data_Collect">
+            <trigger_point x="-9.90" y="-204.31" z="0.00" yaw="90" />
+         </scenario>
          <scenario name="CutIn_One_1" type="OSG_CutIn_One">
             <trigger_point x="-9.90" y="-204.31" z="0.00" yaw="90" />
-            <absolute_v value="10.913565158252368" />
-            <relative_p value="20.6293586860043" />
-            <relative_v value="-1.3099110654276291" />
+            <absolute_v value="14.39683374564754" />
+            <relative_p value="31.727343926029242" />
+            <relative_v value="3.705566306838122" />
          </scenario>
       </scenarios>
    </route>
-   <route id="2" town="Town04">
+   
+   <route id="200" town="Town04">
       <weathers>
          <weather route_percentage="0" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="90.0" fog_density="2.0" />
          <weather route_percentage="100" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="15.0" fog_density="2.0" />
@@ -45,13 +53,62 @@
          <position x="-9.15" y="70.3" z="0.00" />
       </waypoints>
       <scenarios>
+         <scenario name="OSG_Data_Collect_1" type="OSG_Data_Collect">
+            <trigger_point x="-9.90" y="-119.31" z="0.00" yaw="90" />
+         </scenario>
          <scenario name="CutIn_Tow_1" type="OSG_CutIn_Two">
             <trigger_point x="-9.90" y="-119.31" z="0.00" yaw="90" />
-            <absolute_v value="17.91" />
-            <relative_p_1 value="52.577025386236706" />
-            <relative_v_1 value="-0.7878567585503014" />
-            <relative_p_2 value="-66.48239074847031" />
-            <relative_v_2 value="2.05" />
+            <absolute_v value="4.063347915571388" />
+            <relative_p_1 value="35.179860530582246" />
+            <relative_v_1 value="1.5255500462657583" />
+            <relative_p_2 value="-23.784525405390582" />
+            <relative_v_2 value="13.641993133812692" />
+         </scenario>
+      </scenarios>
+   </route>
+   
+   <route id="1" town="Town04">
+      <weathers>
+         <weather route_percentage="0" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="90.0" fog_density="2.0" />
+         <weather route_percentage="100" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="15.0" fog_density="2.0" />
+      </weathers>
+      <waypoints>
+         <position x="-1.88" y="13.08" z="10.92" />
+         <position x="-210.35" y="12.66" z="4.19" />
+      </waypoints>
+      <scenarios>
+         <scenario name="OSG_Data_Collect_1" type="OSG_Data_Collect">
+            <trigger_point x="-10" y="13.08" z="11.0" yaw="-180" />
+         </scenario>
+         <scenario name="CutIn_One_1" type="OSG_CutIn_One">
+            <trigger_point x="-10" y="13.08" z="11.0" yaw="-180" />
+            <absolute_v value="15.39683374564754" />
+            <relative_p value="25.727343926029242" />
+            <relative_v value="-1.705566306838122" />
+         </scenario>
+      </scenarios>
+   </route>
+   
+   <route id="2" town="Town04">
+      <weathers>
+         <weather route_percentage="0" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="90.0" fog_density="2.0" />
+         <weather route_percentage="100" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="15.0" fog_density="2.0" />
+      </weathers>
+      <waypoints>
+         <position x="-1.88" y="13.08" z="10.92" />
+         <position x="-210.35" y="12.66" z="4.19" />
+      </waypoints>
+      <scenarios>
+         <scenario name="OSG_Data_Collect_1" type="OSG_Data_Collect">
+            <trigger_point x="-10" y="13.08" z="11.0" yaw="-180" />
+         </scenario>
+         <scenario name="CutIn_Tow_1" type="OSG_CutIn_Two">
+            <trigger_point x="-10" y="13.08" z="11.0" yaw="-180" />
+            <absolute_v value="15.89214614341377" />
+            <relative_p_1 value="48.66658262937784" />
+            <relative_v_1 value="3.3294256589360582" />
+            <relative_p_2 value="-25.807381496335566" />
+            <relative_v_2 value="11.368750367451218" />
          </scenario>
       </scenarios>
    </route>
