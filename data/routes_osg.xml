@@ -20,7 +20,7 @@
          </scenario>
       </scenarios>
    </route>
-   
+
    <route id="100" town="Town04">
       <weathers>
          <weather route_percentage="0" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="90.0" fog_density="2.0" />
@@ -42,7 +42,7 @@
          </scenario>
       </scenarios>
    </route>
-   
+
    <route id="200" town="Town04">
       <weathers>
          <weather route_percentage="0" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="90.0" fog_density="2.0" />
@@ -66,7 +66,7 @@
          </scenario>
       </scenarios>
    </route>
-   
+
    <route id="1" town="Town04">
       <weathers>
          <weather route_percentage="0" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="90.0" fog_density="2.0" />
@@ -88,7 +88,7 @@
          </scenario>
       </scenarios>
    </route>
-   
+
    <route id="2" town="Town04">
       <weathers>
          <weather route_percentage="0" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="90.0" fog_density="2.0" />
@@ -104,11 +104,40 @@
          </scenario>
          <scenario name="CutIn_Tow_1" type="OSG_CutIn_Two">
             <trigger_point x="-10" y="13.08" z="11.0" yaw="-180" />
-            <absolute_v value="15.89214614341377" />
-            <relative_p_1 value="48.66658262937784" />
-            <relative_v_1 value="3.3294256589360582" />
-            <relative_p_2 value="-25.807381496335566" />
-            <relative_v_2 value="11.368750367451218" />
+            <absolute_v value="17.913565158252368" />
+            <relative_p_1 value="52.577025386236706" />
+            <relative_v_1 value="-0.7878567585503014" />
+            <relative_p_2 value="-66.48239074847031" />
+            <relative_v_2 value="2.045541313557518" />
+         </scenario>
+      </scenarios>
+   </route>
+
+   <route id="3" town="Town04">
+      <weathers>
+         <weather route_percentage="0" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="90.0" fog_density="2.0" />
+         <weather route_percentage="100" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="15.0" fog_density="2.0" />
+      </weathers>
+      <waypoints>
+         <position x="78.31" y="-170.21" z="0.20" />
+         <position x="225.53" y="-169.37" z="0.20" />
+      </waypoints>
+      <scenarios>
+         <scenario name="OSG_Data_Collect_1" type="OSG_Data_Collect">
+            <trigger_point x="88.31" y="-170.21" z="0.20" yaw="0" />
+         </scenario>
+         <scenario name="PriorityAtJunction_1" type="PriorityAtJunction">
+            <trigger_point x="88.31" y="-170.21" z="0.20" yaw="0" />
+         </scenario>
+         <scenario name="OSG_OppositeVehicleTakingPriority_1" type="OSG_OppositeVehicleTakingPriority">
+            <trigger_point x="88.31" y="-170.21" z="0.20" yaw="0" />
+            <r_ego value="25" />
+            <v_ego value="5" />
+            <r_1 value="30" />
+            <v_1 value="15" />
+            <center_point x="200.26" y="-169.52" z="0.20" yaw="0.33" />
+            <npc_stopline_point x="198.82" y="-179.65" z="0.02" yaw="-268.69" />
+            <npc_dest x="208.53" y="-131.64" z="0.02" yaw="51.49" />
          </scenario>
       </scenarios>
    </route>
