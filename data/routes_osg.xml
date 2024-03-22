@@ -82,9 +82,9 @@
          </scenario>
          <scenario name="CutIn_One_1" type="OSG_CutIn_One">
             <trigger_point x="-10" y="13.08" z="11.0" yaw="-180" />
-            <absolute_v value="15.39683374564754" />
-            <relative_p value="25.727343926029242" />
-            <relative_v value="-1.705566306838122" />
+            <absolute_v value="17.913565158252368" />
+            <relative_p value="62.6293586860043" />
+            <relative_v value="-1.3099110654276291" />
          </scenario>
       </scenarios>
    </route>
@@ -129,15 +129,75 @@
          <scenario name="PriorityAtJunction_1" type="PriorityAtJunction">
             <trigger_point x="88.31" y="-170.21" z="0.20" yaw="0" />
          </scenario>
-         <scenario name="OSG_OppositeVehicleTakingPriority_1" type="OSG_OppositeVehicleTakingPriority">
+         <scenario name="OSG_OppositeVehicleTakingPriority_1" type="OSG_Junction">
             <trigger_point x="88.31" y="-170.21" z="0.20" yaw="0" />
-            <r_ego value="25" />
-            <v_ego value="5" />
-            <r_1 value="30" />
-            <v_1 value="15" />
+            <r_ego value="24.73960873913832" />
+            <v_ego value="10.939231875516995" />
+            <r_1 value="14.451917476551252" />
+            <v_1 value="13.977559745688188" />
             <center_point x="200.26" y="-169.52" z="0.20" yaw="0.33" />
             <npc_stopline_point x="198.82" y="-179.65" z="0.02" yaw="-268.69" />
             <npc_dest x="208.53" y="-131.64" z="0.02" yaw="51.49" />
+         </scenario>
+      </scenarios>
+   </route>
+
+   <route id="4" town="Town04">
+      <weathers>
+         <weather route_percentage="0" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="90.0" fog_density="2.0" />
+         <weather route_percentage="100" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="15.0" fog_density="2.0" />
+      </weathers>
+      <waypoints>
+         <position x="78.31" y="-170.21" z="0.20" />
+         <position x="182.42" y="-169.62" z="0.20" />
+         <position x="202.74" y="-197.86" z="0.02" />
+      </waypoints>
+      <scenarios>
+         <scenario name="OSG_Data_Collect_1" type="OSG_Data_Collect">
+            <trigger_point x="88.31" y="-170.21" z="0.20" yaw="0" />
+         </scenario>
+         <scenario name="PriorityAtJunction_1" type="PriorityAtJunction">
+            <trigger_point x="88.31" y="-170.21" z="0.20" yaw="0" />
+         </scenario>
+         <scenario name="OSG_NonSignalizedJunctionLeftTurn_1" type="OSG_Junction">
+            <trigger_point x="88.31" y="-170.21" z="0.20" yaw="0" />
+            <r_ego value="44.73960873913832" />
+            <v_ego value="6.939231875516995" />
+            <r_1 value="30.451917476551252" />
+            <v_1 value="5.977559745688188" />
+            <center_point x="200.26" y="-169.52" z="0.20" yaw="0.33" />
+            <npc_stopline_point x="210.80" y="-172.96" z="0.20" yaw="180.33" />
+            <npc_dest x="154.92" y="-173.27" z="0.20" yaw="180.33" />
+         </scenario>
+      </scenarios>
+   </route>
+
+   <route id="5" town="Town04">
+      <weathers>
+         <weather route_percentage="0" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="90.0" fog_density="2.0" />
+         <weather route_percentage="100" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="15.0" fog_density="2.0" />
+      </weathers>
+      <waypoints>
+         <position x="78.31" y="-170.21" z="0.20" />
+         <position x="182.42" y="-169.62" z="0.20" />
+         <position x="203.48" y="-139.71" z="0.02" />
+      </waypoints>
+      <scenarios>
+         <scenario name="OSG_Data_Collect_1" type="OSG_Data_Collect">
+            <trigger_point x="88.31" y="-170.21" z="0.20" yaw="0" />
+         </scenario>
+         <scenario name="PriorityAtJunction_1" type="PriorityAtJunction">
+            <trigger_point x="88.31" y="-170.21" z="0.20" yaw="0" />
+         </scenario>
+         <scenario name="OSG_NonSignalizedJunctionRightTurn_1" type="OSG_Junction">
+            <trigger_point x="88.31" y="-170.21" z="0.20" yaw="0" />
+            <r_ego value="54.73960873913832" />
+            <v_ego value="6.939231875516995" />
+            <r_1 value="75.451917476551252" />
+            <v_1 value="15.977559745688188" />
+            <center_point x="200.26" y="-169.52" z="0.20" yaw="0.33" />
+            <npc_stopline_point x="198.82" y="-179.65" z="0.02" yaw="-268.69" />
+            <npc_dest x="213.68" y="-126.46" z="0.02" yaw="38.76" />
          </scenario>
       </scenarios>
    </route>
