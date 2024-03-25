@@ -191,18 +191,21 @@ class LeaderboardEvaluator(object):
         """
         # Has simulation failed?
         if self.world and self.manager and not self._client_timed_out:
-            # Reset to asynchronous mode
-            self.world.tick()  # TODO: Make sure all scenario actors have been destroyed
-            settings = self.world.get_settings()
-            settings.synchronous_mode = False
-            settings.fixed_delta_seconds = None
-            settings.deterministic_ragdolls = False
-            settings.spectator_as_ego = True
-            self.world.apply_settings(settings)
+            try:
+                # Reset to asynchronous mode
+                self.world.tick()  # TODO: Make sure all scenario actors have been destroyed
+                settings = self.world.get_settings()
+                settings.synchronous_mode = False
+                settings.fixed_delta_seconds = None
+                settings.deterministic_ragdolls = False
+                settings.spectator_as_ego = True
+                self.world.apply_settings(settings)
 
-            # Make the TM back to async
-            self.traffic_manager.set_synchronous_mode(False)
-            self.traffic_manager.set_hybrid_physics_mode(False)
+                # Make the TM back to async
+                self.traffic_manager.set_synchronous_mode(False)
+                self.traffic_manager.set_hybrid_physics_mode(False)
+            except:
+                print("Can not connect to Carla at _reset_world_settings()")
 
     def _load_and_wait_for_world(self, args, town):
         """

@@ -243,8 +243,11 @@ class AgentWrapper(object):
             self._sensors_list.append(sensor)
 
         # Some sensors miss sending data during the first ticks, so tick several times and remove the data
-        for _ in range(10):
-            world.tick()
+        try:
+            for _ in range(10):
+                world.tick()
+        except:
+            print("Can not connect to Carla at setup_sensors()")
 
     def cleanup(self):
         """
