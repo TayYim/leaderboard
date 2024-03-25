@@ -30,6 +30,7 @@ class ApolloAgent(AutonomousAgent):
     _agent = None
     _route_assigned = False
     _container_name = "apollo_dev_tay"
+    _user_name = "tay"
     x = 0
     y = 0
     z = 0
@@ -48,7 +49,7 @@ class ApolloAgent(AutonomousAgent):
 
         # Execute the Apollo
         command = f"/bin/bash start.sh -x {self.x} -y {self.y} -z {self.z} -yaw {self.yaw} -m {self.m}"
-        docker_exec_command = f"docker exec --user tay -w /apollo/modules/apollo-bridge  {self._container_name} {command}"
+        docker_exec_command = f"docker exec --user {self._user_name} -w /apollo/modules/apollo-bridge  {self._container_name} {command}"
         print(command)
         process = subprocess.Popen(
             docker_exec_command,
@@ -172,7 +173,7 @@ class ApolloAgent(AutonomousAgent):
         """
         print("Run destroy")
         command = "/bin/bash kill.sh"
-        docker_exec_command = f"docker exec --user tay -w /apollo/modules/apollo-bridge  {self._container_name} {command}"
+        docker_exec_command = f"docker exec --user {self._user_name} -w /apollo/modules/apollo-bridge  {self._container_name} {command}"
         process = subprocess.Popen(
             docker_exec_command,
             shell=True,
