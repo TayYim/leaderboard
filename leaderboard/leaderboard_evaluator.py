@@ -18,7 +18,7 @@ from argparse import RawTextHelpFormatter
 from distutils.version import LooseVersion
 import importlib
 import os
-# import pkg_resources
+import pkg_resources
 import sys
 import carla
 import signal
@@ -78,10 +78,10 @@ class LeaderboardEvaluator(object):
         # Setup the simulation
         self.client, self.client_timeout, self.traffic_manager = self._setup_simulation(args)
 
-        # dist = pkg_resources.get_distribution("carla")
-        # if dist.version != 'leaderboard':
-        #     if LooseVersion(dist.version) < LooseVersion('0.9.10'):
-        #         raise ImportError("CARLA version 0.9.10.1 or newer required. CARLA version found: {}".format(dist))
+        dist = pkg_resources.get_distribution("carla")
+        if dist.version != 'leaderboard':
+            if LooseVersion(dist.version) < LooseVersion('0.9.10'):
+                raise ImportError("CARLA version 0.9.10.1 or newer required. CARLA version found: {}".format(dist))
 
         # Load agent
         module_name = os.path.basename(args.agent).split('.')[0]

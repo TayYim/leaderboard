@@ -196,7 +196,7 @@ class ScenarioManager(object):
 
             self._watchdog.resume()
 
-            # Process situation like apollo_agent
+            # Only in passive mode. Agent controlled by external module
             if ego_action == -1:
                 ego_action = self.ego_vehicles[0].get_control()
             else:

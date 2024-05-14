@@ -146,7 +146,9 @@ class RouteScenario(BasicScenario):
         elevate_transform = self.route[0][0]
         elevate_transform.location.z += 0.5
 
-        ego_vehicle = CarlaDataProvider.request_new_actor('vehicle.lincoln.mkz_2017',
+        # Mind that Apollo use vehicle.lincoln.mkz_2017'
+        # By default it's 'vehicle.lincoln.mkz_2020
+        ego_vehicle = CarlaDataProvider.request_new_actor('vehicle.lincoln.mkz_2020',
                                                           elevate_transform,
                                                           rolename='hero')
         if not ego_vehicle:
@@ -400,7 +402,7 @@ class RouteScenario(BasicScenario):
         # register var
         self.scenario_triggerer = scenario_triggerer
 
-        # Add the Background Activity
+        # Background Activity is disabled for CarlaLoop
         # behavior.add_child(BackgroundBehavior(self.ego_vehicles[0], self.route, name="BackgroundActivity"))
 
         behavior.add_children(scenario_behaviors)
@@ -421,7 +423,7 @@ class RouteScenario(BasicScenario):
 
         # 'Normal' criteria
         criteria.add_child(OutsideRouteLanesTest(self.ego_vehicles[0], route=self.route))
-        criteria.add_child(CollisionTest(self.ego_vehicles[0], terminate_on_failure=True, name="CollisionTest")) # terminate_on_failure set Ture for OSG
+        criteria.add_child(CollisionTest(self.ego_vehicles[0], terminate_on_failure=True, name="CollisionTest")) # terminate_on_failure set Ture for CarlaLoop
         criteria.add_child(RunningRedLightTest(self.ego_vehicles[0]))
         criteria.add_child(RunningStopTest(self.ego_vehicles[0]))
         criteria.add_child(MinimumSpeedRouteTest(self.ego_vehicles[0], self.route, checkpoints=4, name="MinSpeedTest"))
@@ -430,7 +432,7 @@ class RouteScenario(BasicScenario):
         criteria.add_child(InRouteTest(
             self.ego_vehicles[0], route=self.route, offroad_max=30, terminate_on_failure=True))
         criteria.add_child(ActorBlockedTest(
-            self.ego_vehicles[0], min_speed=0.1, max_time=360.0, terminate_on_failure=True, name="AgentBlockedTest")
+            self.ego_vehicles[0], min_speed=0.1, max_time=180.0, terminate_on_failure=True, name="AgentBlockedTest")
         )
 
         return criteria
