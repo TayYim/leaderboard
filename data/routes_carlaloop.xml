@@ -1,0 +1,165 @@
+<routes>
+
+   <!-- Empty test -->
+   <route id="0" town="Town01">
+      <weathers>
+         <weather route_percentage="0" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="90.0" fog_density="2.0" />
+         <weather route_percentage="100" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="15.0" fog_density="2.0" />
+      </weathers>
+      <waypoints>
+         <position x="396.35" y="310" z="0.00" />
+         <position x="396.30" y="100" z="0.00" />
+      </waypoints>
+      <scenarios>
+         <scenario name="OSG_Data_Collect_1" type="OSG_Data_Collect">
+            <trigger_point x="396.35" y="300" z="0.00" yaw="-90" />
+         </scenario>
+         <scenario name="HardBreakRoute_1" type="OSG_FrontBrake">
+            <trigger_point x="396.35" y="300" z="0.00" yaw="-90" />
+            <absolute_v value="11.145497053586338" />
+            <relative_p value="39.14928753446652" />
+            <relative_v value="2.7336181381760305" />
+         </scenario>
+      </scenarios>
+   </route>
+
+   <!-- CutIn with 1 NPC -->
+   <route id="1" town="Town04">
+      <weathers>
+         <weather route_percentage="0" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="90.0" fog_density="2.0" />
+         <weather route_percentage="100" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="15.0" fog_density="2.0" />
+      </weathers>
+      <waypoints>
+         <position x="-1.88" y="13.08" z="10.92" />
+         <position x="-210.35" y="12.66" z="4.19" />
+      </waypoints>
+      <scenarios>
+         <scenario name="CLDataCollect_1" type="CLDataCollect">
+            <trigger_point x="-10" y="13.08" z="11.0" yaw="-180" />
+         </scenario>
+         <scenario name="CutInOne_1" type="CLCutInOne">
+            <trigger_point x="-10" y="13.08" z="11.0" yaw="-180" />
+            <absolute_v value="17.913565158252368" />
+            <relative_p value="62.6293586860043" />
+            <relative_v value="-1.3099110654276291" />
+         </scenario>
+      </scenarios>
+   </route>
+
+   <!-- CutIn with 2 NPC -->
+   <route id="2" town="Town04">
+      <weathers>
+         <weather route_percentage="0" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="90.0" fog_density="2.0" />
+         <weather route_percentage="100" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="15.0" fog_density="2.0" />
+      </weathers>
+      <waypoints>
+         <position x="-1.88" y="13.08" z="10.92" />
+         <position x="-210.35" y="12.66" z="4.19" />
+      </waypoints>
+      <scenarios>
+         <scenario name="CLDataCollect_1" type="CLDataCollect">
+            <trigger_point x="-10" y="13.08" z="11.0" yaw="-180" />
+         </scenario>
+         <scenario name="CutInTow_1" type="CLCutInTwo">
+            <trigger_point x="-10" y="13.08" z="11.0" yaw="-180" />
+            <absolute_v value="17.913565158252368" />
+            <relative_p_1 value="52.577025386236706" />
+            <relative_v_1 value="-0.7878567585503014" />
+            <relative_p_2 value="-66.48239074847031" />
+            <relative_v_2 value="2.045541313557518" />
+         </scenario>
+      </scenarios>
+   </route>
+
+   <!-- OppositeVehicleTakingPriority -->
+   <route id="3" town="Town04">
+      <weathers>
+         <weather route_percentage="0" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="90.0" fog_density="2.0" />
+         <weather route_percentage="100" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="15.0" fog_density="2.0" />
+      </weathers>
+      <waypoints>
+         <position x="78.31" y="-170.21" z="0.20" />
+         <position x="225.53" y="-169.37" z="0.20" />
+      </waypoints>
+      <scenarios>
+         <scenario name="CLDataCollect_1" type="CLDataCollect">
+            <trigger_point x="88.31" y="-170.21" z="0.20" yaw="0" />
+         </scenario>
+         <scenario name="PriorityAtJunction_1" type="PriorityAtJunction">
+            <trigger_point x="88.31" y="-170.21" z="0.20" yaw="0" />
+         </scenario>
+         <scenario name="CLOppositeVehicleTakingPriority_1" type="CLJunction">
+            <trigger_point x="88.31" y="-170.21" z="0.20" yaw="0" />
+            <r_ego value="24.73960873913832" />
+            <v_ego value="10.939231875516995" />
+            <r_1 value="14.451917476551252" />
+            <v_1 value="13.977559745688188" />
+            <center_point x="200.26" y="-169.52" z="0.20" yaw="0.33" />
+            <npc_stopline_point x="198.82" y="-179.65" z="0.02" yaw="-268.69" />
+            <npc_dest x="208.53" y="-131.64" z="0.02" yaw="51.49" />
+         </scenario>
+      </scenarios>
+   </route>
+
+   <!-- NonSignalizedJunctionLeftTurn -->
+   <route id="4" town="Town04">
+      <weathers>
+         <weather route_percentage="0" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="90.0" fog_density="2.0" />
+         <weather route_percentage="100" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="15.0" fog_density="2.0" />
+      </weathers>
+      <waypoints>
+         <position x="78.31" y="-170.21" z="0.20" />
+         <position x="182.42" y="-169.62" z="0.20" />
+         <position x="202.74" y="-197.86" z="0.02" />
+      </waypoints>
+      <scenarios>
+         <scenario name="CLDataCollect_1" type="CLDataCollect">
+            <trigger_point x="88.31" y="-170.21" z="0.20" yaw="0" />
+         </scenario>
+         <scenario name="PriorityAtJunction_1" type="PriorityAtJunction">
+            <trigger_point x="88.31" y="-170.21" z="0.20" yaw="0" />
+         </scenario>
+         <scenario name="CLNonSignalizedJunctionLeftTurn_1" type="CLJunction">
+            <trigger_point x="88.31" y="-170.21" z="0.20" yaw="0" />
+            <r_ego value="44.73960873913832" />
+            <v_ego value="6.939231875516995" />
+            <r_1 value="30.451917476551252" />
+            <v_1 value="5.977559745688188" />
+            <center_point x="200.26" y="-169.52" z="0.20" yaw="0.33" />
+            <npc_stopline_point x="210.80" y="-172.96" z="0.20" yaw="180.33" />
+            <npc_dest x="154.92" y="-173.27" z="0.20" yaw="180.33" />
+         </scenario>
+      </scenarios>
+   </route>
+
+   <!-- NonSignalizedJunctionRightTurn -->
+   <route id="5" town="Town04">
+      <weathers>
+         <weather route_percentage="0" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="90.0" fog_density="2.0" />
+         <weather route_percentage="100" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="15.0" fog_density="2.0" />
+      </weathers>
+      <waypoints>
+         <position x="78.31" y="-170.21" z="0.20" />
+         <position x="182.42" y="-169.62" z="0.20" />
+         <position x="203.48" y="-139.71" z="0.02" />
+      </waypoints>
+      <scenarios>
+         <scenario name="CLDataCollect_1" type="CLDataCollect">
+            <trigger_point x="88.31" y="-170.21" z="0.20" yaw="0" />
+         </scenario>
+         <scenario name="PriorityAtJunction_1" type="PriorityAtJunction">
+            <trigger_point x="88.31" y="-170.21" z="0.20" yaw="0" />
+         </scenario>
+         <scenario name="CLNonSignalizedJunctionRightTurn_1" type="CLJunction">
+            <trigger_point x="88.31" y="-170.21" z="0.20" yaw="0" />
+            <r_ego value="54.73960873913832" />
+            <v_ego value="6.939231875516995" />
+            <r_1 value="75.451917476551252" />
+            <v_1 value="15.977559745688188" />
+            <center_point x="200.26" y="-169.52" z="0.20" yaw="0.33" />
+            <npc_stopline_point x="198.82" y="-179.65" z="0.02" yaw="-268.69" />
+            <npc_dest x="213.68" y="-126.46" z="0.02" yaw="38.76" />
+         </scenario>
+      </scenarios>
+   </route>
+</routes>
