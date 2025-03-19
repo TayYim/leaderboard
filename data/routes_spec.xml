@@ -202,6 +202,29 @@
       </scenarios>
    </route>
 
+   <route id="98" town="Town04">
+      <weathers>
+         <weather route_percentage="0" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="90.0" fog_density="2.0" />
+         <weather route_percentage="100" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="15.0" fog_density="2.0" />
+      </weathers>
+      <waypoints>
+         <position x="325" y="13.86" z="1" />
+         <position x="-350" y="8.98" z="0.5" />
+      </waypoints>
+      <scenarios>
+         <scenario name="SPEC_Data_Collect_1" type="SPEC_Data_Collect">
+            <trigger_point x="325" y="13.86" z="1" yaw="-180" />
+         </scenario>
+         <scenario name="SPEC_Random_1" type="SPEC_Random">
+            <trigger_point x="325" y="13.86" z="1" yaw="-180" />
+            <endding_point x="-345" y="8.98" z="0.5" />
+            <num_vehicles value="3" />
+            <min_speed value="5" />
+            <max_speed value="10" />
+         </scenario>
+      </scenarios>
+   </route>
+
 <!-- This is a demo route for SPEC development -->
    <route id="99" town="Town04">
       <weathers>

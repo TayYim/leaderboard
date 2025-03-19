@@ -146,7 +146,7 @@ class RouteScenario(BasicScenario):
         elevate_transform = self.route[0][0]
         elevate_transform.location.z += 0.5
 
-        ego_vehicle = CarlaDataProvider.request_new_actor('vehicle.lincoln.mkz_2017',
+        ego_vehicle = CarlaDataProvider.request_new_actor('vehicle.lincoln.mkz_2020',
                                                           elevate_transform,
                                                           rolename='hero')
         if not ego_vehicle:
@@ -421,7 +421,7 @@ class RouteScenario(BasicScenario):
 
         # 'Normal' criteria
         criteria.add_child(OutsideRouteLanesTest(self.ego_vehicles[0], route=self.route))
-        criteria.add_child(CollisionTest(self.ego_vehicles[0], terminate_on_failure=True, name="CollisionTest")) # terminate_on_failure set Ture for OSG
+        criteria.add_child(CollisionTest(self.ego_vehicles[0], terminate_on_failure=False, name="CollisionTest"))
         criteria.add_child(RunningRedLightTest(self.ego_vehicles[0]))
         criteria.add_child(RunningStopTest(self.ego_vehicles[0]))
         criteria.add_child(MinimumSpeedRouteTest(self.ego_vehicles[0], self.route, checkpoints=4, name="MinSpeedTest"))
