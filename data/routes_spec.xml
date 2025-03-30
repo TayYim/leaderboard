@@ -208,17 +208,17 @@
          <weather route_percentage="100" cloudiness="5.0" precipitation="0.0" precipitation_deposits="0.0" wetness="0.0" wind_intensity="10.0" sun_azimuth_angle="-1.0" sun_altitude_angle="15.0" fog_density="2.0" />
       </weathers>
       <waypoints>
-         <position x="325" y="13.86" z="1" />
-         <position x="-350" y="8.98" z="0.5" />
+         <position x="-354.00" y="33.50" z="0.5" />
+         <position x="337.00" y="35.06" z="0.5" />
       </waypoints>
       <scenarios>
          <scenario name="SPEC_Data_Collect_1" type="SPEC_Data_Collect">
-            <trigger_point x="325" y="13.86" z="1" yaw="-180" />
+            <trigger_point x="-354.00" y="33.50" z="0.5" yaw="0" />
          </scenario>
          <scenario name="SPEC_Random_1" type="SPEC_Random">
-            <trigger_point x="325" y="13.86" z="1" yaw="-180" />
-            <endding_point x="-345" y="8.98" z="0.5" />
-            <num_vehicles value="3" />
+            <trigger_point x="-354.00" y="33.50" z="0.5" yaw="0" />
+            <endding_point  x="337.00" y="35.06" z="0.5" />
+            <num_vehicles value="10" />
             <min_speed value="5" />
             <max_speed value="10" />
          </scenario>
