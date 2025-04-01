@@ -96,8 +96,62 @@ class AbaAgent(AutonomousAgent):
             return carla.VehicleControl()
 
         else:
+            # Update planning encoding before running step
+            self._update_planning_encoding()
+            
+            # Run the agent step
             return self._agent.run_step()
             
+    def _update_planning_encoding(self):
+        """
+        Calculate planning encoding from agent's current state and store it in CarlaDataProvider
+        """
+        # Import the computation function
+        try:
+            # Try absolute import
+            from src.data_process.hsr_calculation import compute_pe_carla
+        except ImportError:
+            try:
+                # Try relative import based on SPEC path
+                import sys
+                import os
+                
+                # Try to find the SPEC root directory
+                spec_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../.."))
+                if spec_path not in sys.path:
+                    sys.path.append(spec_path)
+                
+                from src.data_process.hsr_calculation import compute_pe_carla
+            except ImportError as e:
+                print(f"Error importing compute_pe_carla: {e}")
+                # Define a simple fallback function that returns neutral planning (0.0)
+                def compute_pe_carla(agent=None, trajectory=None, road_option=None):
+                    # Try to extract some basic planning information if agent has a local planner
+                    if agent and hasattr(agent, '_local_planner') and hasattr(agent._local_planner, '_target_road_option'):
+                        target_option = agent._local_planner._target_road_option
+                        if str(target_option).upper() in ('LEFT', 'TURNLEFT'):
+                            return 1.0
+                        elif str(target_option).upper() in ('RIGHT', 'TURNRIGHT'):
+                            return -1.0
+                        elif str(target_option).upper() == 'CHANGELANELEFT':
+                            return 0.5
+                        elif str(target_option).upper() == 'CHANGELANERIGHT':
+                            return -0.5
+                    return 0.0
+        
+        try:
+            # Get planning encoding using the agent
+            planning_encoding = compute_pe_carla(agent=self._agent)
+            
+            # Store the planning encoding in the central provider
+            from srunner.scenariomanager.carla_data_provider import CarlaDataProvider
+            CarlaDataProvider.set_planning_encoding(planning_encoding)
+        except Exception as e:
+            print(f"Error updating planning encoding: {e}")
+            # Set neutral planning as fallback
+            from srunner.scenariomanager.carla_data_provider import CarlaDataProvider
+            CarlaDataProvider.set_planning_encoding(0.0)
+
     def _draw_trajectory(self, plan):
         """
         Draw the planned trajectory in the simulator
