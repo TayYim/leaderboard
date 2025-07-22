@@ -5,6 +5,5 @@ pygame
 tabulate
 pexpect
 transforms3d
-pymongo
 torch
 torchvision

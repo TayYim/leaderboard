@@ -29,13 +29,70 @@ class ApolloAgent(AutonomousAgent):
 
     _agent = None
     _route_assigned = False
-    _container_name = "apollo_dev_tay"
-    _user_name = "tay"
+    _apollo_config = None
+    _apollo_config_loader = None
     x = 0
     y = 0
     z = 0
     yaw = 0
     m = "Town04"
+
+    def _get_apollo_config(self):
+        """Get Apollo configuration, loading it on first access."""
+        if self._apollo_config is None:
+            try:
+                # Import here to avoid circular imports and path issues
+                import sys
+                from pathlib import Path
+                
+                # Add src directory to path for imports
+                current_file = Path(__file__).resolve()
+                # Navigate to project root (leaderboard -> dependencies -> Carlo -> src)
+                project_root = current_file.parent.parent.parent.parent.parent
+                src_path = project_root / "src"
+                if str(src_path) not in sys.path:
+                    sys.path.insert(0, str(src_path))
+                
+                from utils.apollo_config_loader import get_apollo_config_loader
+                loader = get_apollo_config_loader()
+                container_name = loader.get_container_name()
+                user_name = loader.get_user_name()
+                self._apollo_config = {
+                    'container_name': container_name,
+                    'user_name': user_name
+                }
+                print(f"Apollo config loaded: container={container_name}, user={user_name}")
+            except Exception as e:
+                print(f"Failed to load Apollo configuration: {e}")
+                print("Using default Apollo settings")
+                self._apollo_config = {
+                    'container_name': 'apollo_dev_tay',
+                    'user_name': 'tay'
+                }
+                
+        return self._apollo_config
+
+    def _get_container_name(self) -> str:
+        """Get Apollo container name from config."""
+        config = self._get_apollo_config()
+        return config['container_name']
+
+    def _get_container_user(self) -> str:
+        """Get Apollo container user from config."""
+        config = self._get_apollo_config()
+        return config['user_name']
+
+    def _get_workdir(self) -> str:
+        """Get Apollo container working directory."""
+        return "/apollo/modules/apollo-bridge"
+
+    def _get_start_script(self) -> str:
+        """Get Apollo start script name."""
+        return "start.sh"
+
+    def _get_kill_script(self) -> str:
+        """Get Apollo kill script name."""
+        return "kill.sh"
 
     def setup(self, path_to_conf_file):
         """
@@ -48,9 +105,11 @@ class ApolloAgent(AutonomousAgent):
         # Find destination
 
         # Execute the Apollo
-        command = f"/bin/bash start.sh -x {self.x} -y {self.y} -z {self.z} -yaw {self.yaw} -m {self.m}"
-        docker_exec_command = f"docker exec --user {self._user_name} -w /apollo/modules/apollo-bridge  {self._container_name} {command}"
-        print(command)
+        start_script = self._get_start_script()
+        command = f"/bin/bash {start_script} -x {self.x} -y {self.y} -z {self.z} -yaw {self.yaw} -m {self.m}"
+        docker_exec_command = f"docker exec --user {self._get_container_user()} -w {self._get_workdir()} {self._get_container_name()} {command}"
+        print(f"Executing Apollo start command: {command}")
+        print(f"Docker exec command: {docker_exec_command}")
         process = subprocess.Popen(
             docker_exec_command,
             shell=True,
@@ -172,8 +231,11 @@ class ApolloAgent(AutonomousAgent):
         :return:
         """
         print("Run destroy")
-        command = "/bin/bash kill.sh"
-        docker_exec_command = f"docker exec --user {self._user_name} -w /apollo/modules/apollo-bridge  {self._container_name} {command}"
+        kill_script = self._get_kill_script()
+        command = f"/bin/bash {kill_script}"
+        docker_exec_command = f"docker exec --user {self._get_container_user()} -w {self._get_workdir()} {self._get_container_name()} {command}"
+        print(f"Executing Apollo kill command: {command}")
+        print(f"Docker exec command: {docker_exec_command}")
         process = subprocess.Popen(
             docker_exec_command,
             shell=True,
